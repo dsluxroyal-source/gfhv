@@ -1,0 +1,61 @@
+import os
+import time
+from datetime import datetime
+FILE_NAME = "reminders.txt"
+reminders = []
+def load_reminders():
+    if os.path.exists(FILE_NAME):
+        with open(FILE_NAME, "r", encoding="utf-8") as file:
+            for line in file:
+                reminders.append(line.strip())
+def save_reminders():
+    with open(FILE_NAME, "w", encoding="utf-8") as file:
+        for reminder in reminders:
+            file.write(reminder + "\n")
+def add_reminder():
+    message = input("Reminder: ").strip()
+    reminder_time = input("Time (HH:MM): ").strip()
+    if message and reminder_time:
+        reminders.append(f"{reminder_time}|{message}")
+        save_reminders()
+        print("Reminder added.")
+    else:
+        print("Invalid input.")
+def view_reminders():
+    if not reminders:
+        print("No reminders.")
+        return
+    print("\n===== REMINDERS =====")
+    for number, reminder in enumerate(reminders, start=1):
+        reminder_time, message = reminder.split("|")
+        print(f"{number}. {reminder_time} - {message}")
+def check_reminders():
+    current_time = datetime.now().strftime("%H:%M")
+    for reminder in reminders:
+        reminder_time, message = reminder.split("|")
+        if reminder_time == current_time:
+            print("\n" + "=" * 40)
+            print("🔔 JARVIS NOTIFICATION")
+            print(message)
+            print("=" * 40)
+load_reminders()
+while True:
+    check_reminders()
+    print("\n===== JARVIS NOTIFICATION ASSISTANT =====")
+    print("1. Add Reminder")
+    print("2. View Reminders")
+    print("3. Refresh")
+    print("4. Exit")
+    choice = input("Choose: ")
+    if choice == "1":
+        add_reminder()
+    elif choice == "2":
+        view_reminders()
+    elif choice == "3":
+        print("Checking reminders...")
+        time.sleep(1)
+    elif choice == "4":
+        print("Goodbye!")
+        break
+    else:
+        print("Invalid option.")
